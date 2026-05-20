@@ -1,17 +1,17 @@
+version: '3.8'
+
 services:
   postgres:
     image: postgres:16
     container_name: farmacia_db
     restart: always
-
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin123
-      POSTGRES_DB: farmacia
-
+      # O Docker vai buscar os valores direto do arquivo .env
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
       - "5432:5432"
-
     volumes:
       - farmacia_data:/var/lib/postgresql/data
 
