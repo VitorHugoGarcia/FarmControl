@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: farmacia_db
+    restart: always
+
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: farmacia
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - farmacia_data:/var/lib/postgresql/data
+
+volumes:
+  farmacia_data:
