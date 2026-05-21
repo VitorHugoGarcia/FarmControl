@@ -1,0 +1,9 @@
+POST http://localhost:3333/api/nfe/ler
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="arquivoXml"; filename="nota_teste.xml"
+Content-Type: text/xml
+
+< ./nota_teste.xml
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
