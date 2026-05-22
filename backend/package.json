@@ -5,7 +5,11 @@
   "main": "src/server.ts",
   "type": "module",
   "scripts": {
+<<<<<<< HEAD
     "dev": "tsx watch src/server.ts",
+=======
+    "dev": "nodemon --exec ts-node src/server.ts",
+>>>>>>> 46961cc (fix: Configuração do Prisma, Docker e Conexão entre ambos.)
     "build": "tsc",
     "start": "node dist/server.js"
   },
@@ -13,12 +17,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "init": "^0.1.2",
     "multer": "^2.1.1",
     "npm": "^11.15.0",
+    "pg": "^8.21.0",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
@@ -26,7 +32,12 @@
     "@types/express": "^5.0.6",
     "@types/multer": "^2.1.0",
     "@types/node": "^25.9.1",
+<<<<<<< HEAD
     "@types/xml2js": "^0.4.14",
+=======
+    "@types/pg": "^8.20.0",
+    "dotenv": "^17.4.2",
+>>>>>>> 46961cc (fix: Configuração do Prisma, Docker e Conexão entre ambos.)
     "nodemon": "^3.1.14",
     "prisma": "^6.19.3",
     "ts-node": "^10.9.2",

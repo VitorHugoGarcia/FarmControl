@@ -1,0 +1,11 @@
+model Medicamento {
+  id               Int      @id @default(autoincrement())
+  nome             String
+  categoria        String
+  fabricante       String
+  lote             String
+  quantidade       Int
+  quantidadeMinima Int      @default(10)
+  preco            Float
+  dataValidade     DateTime
+}
