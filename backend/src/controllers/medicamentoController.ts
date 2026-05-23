@@ -71,3 +71,11 @@ export const atualizarMedicamento = async (req: Request, res: Response) => {
   });
   res.json(medicamento);
 };
+
+export const deletarMedicamento = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  await prisma.medicamento.delete({
+    where: { id: Number(id) },
+  });
+  res.status(204).send();
+};
