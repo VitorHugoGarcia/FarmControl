@@ -28,6 +28,7 @@ O FarmControl permite gerenciar a entrada e saída de medicamentos de uma farmá
 
 ## 📁 Estrutura do Projeto
 
+```text
 FarmControl/
 ├── frontend/
 │   └── src/
@@ -44,7 +45,10 @@ FarmControl/
 ├── .env
 ├── .gitignore
 ├── docker-compose.yml
-└── README.md## ⚙️ Como Rodar o Projeto
+└── README.md
+```
+
+## ⚙️ Como Rodar o Projeto
 
 ### Pré-requisitos
 - Node.js

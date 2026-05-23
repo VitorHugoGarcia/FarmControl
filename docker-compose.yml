@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:16
@@ -13,6 +11,25 @@ services:
       - "5432:5432"
     volumes:
       - farmacia_data:/var/lib/postgresql/data
+    networks:
+      - farmacia_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: farmacia_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "8081:80"
+    networks:
+      - farmacia_network
+    depends_on:
+      - postgres
 
 volumes:
   farmacia_data:
+
+networks:
+  farmacia_network:
