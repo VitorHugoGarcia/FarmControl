@@ -47,3 +47,17 @@ export const listarMedicamentos = async (req: Request, res: Response) => {
   const medicamentos = await prisma.medicamento.findMany();
   res.json(medicamentos);
 };
+
+export const buscarMedicamento = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const medicamento = await prisma.medicamento.findUnique({
+    where: { id: Number(id) },
+  });
+
+  if (!medicamento) {
+    res.status(404).json({ error: "Medicamento não encontrado" });
+    return;
+  }
+
+  res.json(medicamento);
+};
