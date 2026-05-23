@@ -61,3 +61,13 @@ export const buscarMedicamento = async (req: Request, res: Response) => {
 
   res.json(medicamento);
 };
+
+export const atualizarMedicamento = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { nome, categoria, fabricante, lote, quantidade, quantidadeMinima, preco, dataValidade } = req.body;
+  const medicamento = await prisma.medicamento.update({
+    where: { id: Number(id) },
+    data: { nome, categoria, fabricante, lote, quantidade, quantidadeMinima, preco, dataValidade: new Date(dataValidade) },
+  });
+  res.json(medicamento);
+};
