@@ -1,49 +1,50 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '../prisma.js'; 
 
 export const cadastrarBalconista = async (req: Request, res: Response) => {
     try {
-        //captura dados enviados pelo usuário
-        const { nome, email, senha, cpf} = req.body;
+        // 1. CAPTURA DOS DADOS (Alterado para CPF maiúsculo aqui)
+        const { nome, email, senha, CPF } = req.body;
 
-        //validação dos campos
-        if (!nome || !email || !senha || !cpf){
+        // 2. VALIDAÇÃO DOS CAMPOS
+        if (!nome || !email || !senha || !CPF){
             return res.status(400).json({ erro: "Todos os campos são obrigatórios "});
         }
 
-        // 3. VALIDAÇÃO DO FORMATO DO CPF (Padrão 000.000.000-00)
-        // Verificação 1: O CPF precisa ter exatamente 14 caracteres no total (11 números + 2 pontos + 1 traço)
-        if (cpf.length !== 14) {
+        // 3. VALIDAÇÃO DO FORMATO DO CPF
+        if (CPF.length !== 14) {
             return res.status(400).json({ erro: "CPF deve conter exatamente 14 caracteres no formato 000.000.000-00" });
         }
 
-        // Verificação 2: Garante que os pontos e o traço estão nos locais certos
-        const temPontosETraco = cpf.charAt(3) === '.' && cpf.charAt(7) === '.' && cpf.charAt(11) === '-';
+        const temPontosETraco = CPF.charAt(3) === '.' && CPF.charAt(7) === '.' && CPF.charAt(11) === '-';
         if (!temPontosETraco) {
             return res.status(400).json({ erro: "Formato inválido! Insira os pontos e o traço corretamente: 000.000.000-00" });
         }
 
         // 4. VALIDAÇÃO DE E-MAIL REPETIDO
         const emailExistente = await prisma.balconista.findUnique({
-        where: { email }
+            where: { email }
         });
 
+        if (emailExistente) {
+            return res.status(400).json({ erro: "Este e-mail já está cadastrado!" });
+        }
+
+        // 5. SALVAMENTO NO BANCO (Agora o CPF bate perfeitamente com o Prisma)
         const novoBalconista = await prisma.balconista.create({
             data: {
                 nome,
                 email,
                 senha,
-                cpf
+                CPF 
             }
         });
 
         return res.status(201).json({
-            mensagem: "Balconista cadastrrado com sucesso!!",
+            mensagem: "Balconista cadastrado com sucesso!!",
             dados: novoBalconista
         });
     } catch (error){
-        return res.status(500).json({ erro: "Erros interno ao cadastrar balconista"});
+        return res.status(500).json({ erro: "Erro interno ao cadastrar balconista", detalhes: error });
     }
 }

@@ -1,20 +1,20 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import nfeRoutes from './routes/nfeRoutes.js'; // Pluga as rotas do XML (Atenção ao .js no final)
+import nfeRoutes from './routes/nfeRoutes.js'; 
+import routerBalconista from './routes/balconistaRoutes.js'; // Adicionado aqui
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3333; // Mantido na porta 3333 original
+const PORT = process.env.PORT || 3333; 
 
 app.use(cors());
 app.use(express.json());
 
-// Injeta a rota de leitura de nota fiscal
 app.use('/api/nfe', nfeRoutes);
+app.use(routerBalconista); // Adicionado aqui
 
-// Rota raiz original mantida idêntica
 app.get('/', (req, res) => {
   res.json({ message: 'FarmControl API rodando!' });
 });

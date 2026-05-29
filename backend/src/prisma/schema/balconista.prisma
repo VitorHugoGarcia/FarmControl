@@ -1,6 +1,5 @@
 model Balconista {
-  id    Int    @id @default(autoincrement())
-  CPF String
+  CPF   String @id
   nome  String
   email String @unique
   senha String
