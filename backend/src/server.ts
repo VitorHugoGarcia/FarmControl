@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import nfeRoutes from './routes/nfeRoutes.js'; // Pluga as rotas do XML (Atenção ao .js no final)
-import medicamentoRoutes from './routes/medicamentoRoutes'
+import medicamentoRoutes from './routes/medicamento.routes.js'
 
 dotenv.config();
 

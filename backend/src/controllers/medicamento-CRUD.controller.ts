@@ -79,29 +79,3 @@ export const deletarMedicamento = async (req: Request, res: Response) => {
   });
   res.status(204).send();
 };
-
-export const realizarCompra = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { quantidade } = req.body;
-
-  const medicamento = await prisma.medicamento.findUnique({
-    where: { id: Number(id) },
-  });
-
-  if (!medicamento) {
-    res.status(404).json({ error: "Medicamento não encontrado" });
-    return;
-  }
-
-  if (medicamento.quantidade < quantidade) {
-    res.status(400).json({ error: "Quantidade insuficiente em estoque" });
-    return;
-  }
-
-  const atualizado = await prisma.medicamento.update({
-    where: { id: Number(id) },
-    data: { quantidade: medicamento.quantidade - quantidade },
-  });
-
-  res.json(atualizado);
-};
