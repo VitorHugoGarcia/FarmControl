@@ -2,12 +2,17 @@
 // (que gerencia as comunicações de internet do projeto).
 import { Router } from 'express';
 // Importa a função de cadastro que você acabou de escrever
-import { cadastrarUsuario } from '../controllers/usuarioController';
+import { cadastrarUsuario, login } from '../controllers/usuarioController';
+import { authMiddleware } from "../middlewares/authMiddleware.js";
+import { cargoMiddleware } from "../middlewares/cargoMiddleware.js";
 
 // Router organiza caminhos
 const router = Router();
 // Requisiçã ode tipo "POST". 
 // Usada quando o usuário que enviar/criar  um dado noco
-router.post('/usuario', cadastrarUsuario);
-
+router.post('/usuario', 
+    authMiddleware,
+    cargoMiddleware("ADMINISTRADOR"),
+    cadastrarUsuario);
+router.post("/login", login);
 export default router;

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { prisma } from '../prisma.js';
 import bcrypt from 'bcryptjs';
+import jwt from "jsonwebtoken";
 
 export const cadastrarUsuario = async (req: Request, res: Response) => {
     try {
@@ -31,7 +32,7 @@ export const cadastrarUsuario = async (req: Request, res: Response) => {
                 erro: "Formato de CPF inválido!"
             });
         }
-
+ 
         // VERIFICA EMAIL
         const emailExistente = await prisma.usuario.findUnique({
             where: { email }
@@ -70,4 +71,73 @@ export const cadastrarUsuario = async (req: Request, res: Response) => {
             erro: "Erro interno do servidor"
         });
     }
+};
+
+export const login = async (
+    req: Request,
+    res: Response
+) => {
+
+    try {
+
+        const { email, senha } = req.body;
+
+        // VALIDAÇÃO
+        if (!email || !senha) {
+            return res.status(400).json({
+                erro: "Email e senha são obrigatórios!"
+            });
+        }
+
+        // PROCURA USUÁRIO
+        const usuario = await prisma.usuario.findUnique({
+            where: { email }
+        });
+
+        // USUÁRIO NÃO EXISTE
+        if (!usuario) {
+            return res.status(401).json({
+                erro: "Email ou senha inválidos!"
+            });
+        }
+
+        // COMPARA SENHA
+        const senhaCorreta = await bcrypt.compare(
+            senha,
+            usuario.senha
+        );
+
+        if (!senhaCorreta) {
+            return res.status(401).json({
+                erro: "Email ou senha inválidos!"
+            });
+        }
+
+        // GERA TOKEN
+        const token = jwt.sign(
+            {
+                CPF: usuario.CPF,
+                cargo: usuario.cargo
+            },
+            process.env.JWT_SECRET as string,
+            {
+                expiresIn: "8h"
+            }
+        );
+
+        return res.status(200).json({
+            mensagem: "Login realizado com sucesso!",
+            token
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        return res.status(500).json({
+            erro: "Erro interno no login"
+        });
+
+    }
+
 };
