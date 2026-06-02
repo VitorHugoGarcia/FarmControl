@@ -1,6 +1,0 @@
-model Balconista {
-  CPF   String @id
-  nome  String
-  email String @unique
-  senha String
-}

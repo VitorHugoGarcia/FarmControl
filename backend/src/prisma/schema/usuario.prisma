@@ -1,0 +1,13 @@
+enum Cargo {
+  BALCONISTA
+  FARMACEUTICO
+  ADMINISTRADOR
+}
+
+model Usuario {
+  CPF    String @id
+  nome   String
+  email  String @unique
+  senha  String
+  cargo  Cargo @default(BALCONISTA)
+}

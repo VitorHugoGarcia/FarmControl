@@ -2,12 +2,12 @@
 // (que gerencia as comunicações de internet do projeto).
 import { Router } from 'express';
 // Importa a função de cadastro que você acabou de escrever
-import { cadastrarBalconista } from '../controllers/balconistaController';
+import { cadastrarUsuario } from '../controllers/usuarioController';
 
 // Router organiza caminhos
 const router = Router();
 // Requisiçã ode tipo "POST". 
 // Usada quando o usuário que enviar/criar  um dado noco
-router.post('/balconista', cadastrarBalconista);
+router.post('/usuario', cadastrarUsuario);
 
 export default router;

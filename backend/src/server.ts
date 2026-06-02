@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import nfeRoutes from './routes/nfeRoutes.js'; 
-import routerBalconista from './routes/balconistaRoutes.js'; // Adicionado aqui
+import routerBalconista from './routes/usuarioRoutes.js'; // Adicionado aqui
 
 dotenv.config();
 
