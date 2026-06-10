@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
+<NFe>
+<infNFe Id="NFe35260560643248000124550010008453211002345678" versao="4.00">
+<ide>
+<nNF>845321</nNF>
+<dhEmi>2026-05-21T10:00:00-03:00</dhEmi>
+</ide>
+<emit>
+<CNPJ>60643248000124</CNPJ>
+<xNome>FARMACIA INTEGRADA DO BRASIL LTDA</xNome>
+</emit>
+<det nItem="1">
+<prod>
+<cEAN>7891011121314</cEAN>
+<xProd>AMOXICILINA 500MG 21 CAPSULAS - MEDLEY</xProd>
+<NCM>30041010</NCM>
+<qCom>2.0000</qCom>
+<vUnCom>22.4000</vUnCom>
+<vProd>44.80</vProd>
+<med>
+<cProdANVISA>1018103310024</cProdANVISA>
+<vPMC>32.50</vPMC>
+</med>
+</prod>
+</det>
+<det nItem="2">
+<prod>
+<cEAN>7896004714646</cEAN>
+<xProd>DIPIRONA MONOIDRATADA 500MG 10CP - EMS</xProd>
+<NCM>30049025</NCM>
+<qCom>5.0000</qCom>
+<vUnCom>4.5000</vUnCom>
+<vProd>22.50</vProd>
+<med>
+<cProdANVISA>1023505410019</cProdANVISA>
+<vPMC>6.20</vPMC>
+</med>
+</prod>
+</det>
+<total>
+<ICMSTot>
+<vNF>67.30</vNF>
+</ICMSTot>
+</total>
+</infNFe>
+</NFe>
+</nfeProc>

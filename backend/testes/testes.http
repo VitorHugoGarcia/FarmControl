@@ -7,3 +7,71 @@ Content-Type: text/xml
 
 < ./nota_teste.xml
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Cadastrar medicamentos via NF-e XML
+POST http://localhost:3333/medicamentos/nota-fiscal
+Content-Type: multipart/form-data; boundary=----Boundary
+
+------Boundary
+Content-Disposition: form-data; name="xml"; filename="teste.xml"
+Content-Type: text/xml
+
+< ./teste.xml
+------Boundary
+Content-Disposition: form-data; name="lote"
+
+LOT001
+------Boundary
+Content-Disposition: form-data; name="categoria"
+
+Antibiótico
+------Boundary
+Content-Disposition: form-data; name="dataValidade"
+
+2027-01-01
+------Boundary
+Content-Disposition: form-data; name="quantidadeMinima"
+
+5
+------Boundary--
+
+### Listar todos os medicamentos
+GET http://localhost:3333/medicamentos
+
+### Buscar medicamento por ID
+GET http://localhost:3333/medicamentos/1
+
+### Atualizar medicamento
+PUT http://localhost:3333/medicamentos/1
+Content-Type: application/json
+
+{
+  "nome": "DIPIRONA MONOIDRATADA 500MG 10CP - EMS",
+  "categoria": "Analgésico",
+  "fabricante": "EMS",
+  "lote": "LOT002",
+  "quantidade": 10,
+  "quantidadeMinima": 3,
+  "preco": 4.50,
+  "dataValidade": "2027-06-01"
+}
+
+### Realizar compra
+POST http://localhost:3333/medicamentos/compra
+Content-Type: application/json
+
+{
+  "itens": [
+    { "id": 1, "quantidade": 2 },
+    { "id": 2, "quantidade": 1 }
+  ]
+}
+
+### Download do PDF da compra (substituir pelo nome gerado)
+GET http://localhost:3333/medicamentos/compra/download/compra_TIMESTAMP.pdf
+
+### Download do XML da compra (substituir pelo nome gerado)
+GET http://localhost:3333/medicamentos/compra/download/compra_TIMESTAMP.xml
+
+### Deletar medicamento
+DELETE http://localhost:3333/medicamentos/2

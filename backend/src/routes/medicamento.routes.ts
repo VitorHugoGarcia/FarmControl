@@ -1,0 +1,25 @@
+import { Router } from "express";
+import {
+  listarMedicamentos,
+  buscarMedicamento,
+  processarNotaFiscal,
+  atualizarMedicamento,
+  deletarMedicamento,
+} from "../controllers/medicamento-CRUD.controller";
+import { upload } from "../config/multer";
+import { 
+  downloadArquivo, 
+  realizarCompra 
+} from "../controllers/medicamento-Compra.controller";
+
+const router = Router();
+
+router.get("/", listarMedicamentos);
+router.get("/:id", buscarMedicamento);
+router.post("/nota-fiscal", upload.single("xml"), processarNotaFiscal);
+router.put("/:id", atualizarMedicamento);
+router.delete("/:id", deletarMedicamento);
+router.post("/compra", realizarCompra);
+router.get("/compra/download/:arquivo", downloadArquivo);
+
+export default router;

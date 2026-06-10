@@ -20,14 +20,17 @@
     "init": "^0.1.2",
     "multer": "^2.1.1",
     "npm": "^11.15.0",
+    "pdfkit": "^0.18.0",
     "pg": "^8.21.0",
-    "xml2js": "^0.6.2"
+    "xml2js": "^0.6.2",
+    "xmlbuilder2": "^4.0.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/multer": "^2.1.0",
     "@types/node": "^25.9.1",
+    "@types/pdfkit": "^0.17.6",
     "@types/pg": "^8.20.0",
     "@types/xml2js": "^0.4.14",
     "dotenv": "^17.4.2",
