@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import { prisma } from '../prisma.js';
 import bcrypt from 'bcryptjs';
-import jwt from "jsonwebtoken";
+import { gerarToken } from "../utils/jwt.js";
+import { Cargo } from "@prisma/client";
 
 export const cadastrarUsuario = async (req: Request, res: Response) => {
     try {
@@ -12,6 +13,14 @@ export const cadastrarUsuario = async (req: Request, res: Response) => {
         if (!CPF || !nome || !email || !senha || !cargo) {
             return res.status(400).json({
                 erro: "Todos os campos são obrigatórios!"
+            });
+        }
+
+        // VALIDA CARGO
+
+        if (!Object.values(Cargo).includes(cargo)) {
+            return res.status(400).json({
+                erro: "Cargo inválido!"
             });
         }
 
@@ -114,30 +123,49 @@ export const login = async (
         }
 
         // GERA TOKEN
-        const token = jwt.sign(
-            {
-                CPF: usuario.CPF,
-                cargo: usuario.cargo
-            },
-            process.env.JWT_SECRET as string,
-            {
-                expiresIn: "8h"
-            }
-        );
+        const token = gerarToken({
+            CPF: usuario.CPF,
+            cargo: usuario.cargo
+        });
 
         return res.status(200).json({
             mensagem: "Login realizado com sucesso!",
             token
         });
 
-    } catch (error) {
+    }catch (error) {
 
         console.error(error);
 
         return res.status(500).json({
-            erro: "Erro interno no login"
+            erro: "Erro interno no login",
+            detalhes: error
         });
-
     }
 
+};
+
+export const listarUsuarios = async(
+    req: Request,
+    res: Response
+) => {
+    try {
+        const usuario = await prisma.usuario.findMany({
+            select: {
+                CPF: true,
+                nome: true,
+                email: true,
+                cargo: true,
+                createdAt: true,
+                updatedAt: true
+            }
+        });
+
+        return res.status(200).json(usuario);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            erro: "Erro ao listar usuários"
+        });
+    }
 };

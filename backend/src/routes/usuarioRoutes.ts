@@ -2,7 +2,7 @@
 // (que gerencia as comunicações de internet do projeto).
 import { Router } from 'express';
 // Importa a função de cadastro que você acabou de escrever
-import { cadastrarUsuario, login } from '../controllers/usuarioController';
+import { cadastrarUsuario, login, listarUsuarios } from '../controllers/usuarioController';
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { cargoMiddleware } from "../middlewares/cargoMiddleware.js";
 
@@ -13,6 +13,16 @@ const router = Router();
 router.post('/usuario', 
     authMiddleware,
     cargoMiddleware("ADMINISTRADOR"),
-    cadastrarUsuario);
+    cadastrarUsuario
+);
+
 router.post("/login", login);
+
+router.get(
+    "/usuario",
+    authMiddleware,
+    cargoMiddleware("ADMINISTRADOR"),
+    listarUsuarios
+);
+
 export default router;

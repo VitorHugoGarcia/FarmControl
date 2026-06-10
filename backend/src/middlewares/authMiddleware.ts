@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import { verificarToken } from "../utils/jwt.js";
 
-const JWT_SECRET = "farmcontrol_secret";
 
 interface TokenPayload{
     CPF: string;
@@ -36,14 +35,13 @@ export const authMiddleware = (
 
         const token = partes[1] as string;
 
-        const decoded = jwt.verify(
-            token,
-            JWT_SECRET
-        ) as unknown as TokenPayload;
+        const decoded = verificarToken(token) as TokenPayload;
+        req.usuario = decoded;
+        next();
 
     } catch (error){
         return res.status(401).json({
-            erro: "Token incálido ou expirado",
+            erro: "Token inválido ou expirado",
             detalhes: error
         });
     }
