@@ -1,9 +1,14 @@
+import { HashRouter, Routes, Route } from "react-router-dom";
+import HomePage from "./pages/homePage";
+
 function App() {
   return (
-    <div>
-      <h1>FarmControl</h1>
-    </div>
-  )
+    <HashRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+      </Routes>
+    </HashRouter>
+  );
 }
 
 export default App

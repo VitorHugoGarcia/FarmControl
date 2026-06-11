@@ -1,23 +1,27 @@
-import { BrowserWindow as e, app as t } from "electron";
-import { fileURLToPath as n } from "url";
-import r from "path";
+import { BrowserWindow, app } from "electron";
+import { fileURLToPath } from "url";
+import path from "path";
 //#region electron/main.ts
-var i = n(import.meta.url), a = r.dirname(i);
-function o() {
-	let t = new e({
+var __filename = fileURLToPath(import.meta.url);
+var __dirname = path.dirname(__filename);
+function createWindow() {
+	const win = new BrowserWindow({
 		width: 1280,
 		height: 720,
 		webPreferences: {
-			nodeIntegration: !0,
-			contextIsolation: !1
+			nodeIntegration: true,
+			contextIsolation: false
 		}
 	});
-	process.env.VITE_DEV_SERVER_URL ? t.loadURL(process.env.VITE_DEV_SERVER_URL) : t.loadFile(r.join(a, "../dist/index.html"));
+	if (process.env.VITE_DEV_SERVER_URL) win.loadURL(process.env.VITE_DEV_SERVER_URL);
+	else win.loadFile(path.join(__dirname, "../dist/index.html"));
 }
-t.whenReady().then(o), t.on("window-all-closed", () => {
-	process.platform !== "darwin" && t.quit();
-}), t.on("activate", () => {
-	e.getAllWindows().length === 0 && o();
+app.whenReady().then(createWindow);
+app.on("window-all-closed", () => {
+	if (process.platform !== "darwin") app.quit();
+});
+app.on("activate", () => {
+	if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
 //#endregion
 export {};
