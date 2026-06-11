@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { realizarLogin } from "../services/loginService";
 
 export default function LoginPage() {
     // Nossas gavetas de memória organizadas
@@ -8,7 +9,7 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false);
 
     // O motor do formulário
-    const handleLogin = (evento: any) => {
+    const handleLogin = async (evento: any) => {
         evento.preventDefault();
         setLoginError(""); // Limpa erros antigos
 
@@ -17,9 +18,44 @@ export default function LoginPage() {
             return;
         }
 
-        setLoading(true);
-        console.log("Conectando com as credenciais:", usuario, senha);
-        setLoading(false);
+        try {
+
+            setLoading(true);
+
+            const resposta = await realizarLogin({
+                email: usuario,
+                senha: senha
+            });
+
+            console.log("Resposta do backend:", resposta);
+
+            localStorage.setItem(
+                "token",
+                resposta.token
+            );
+
+            console.log("Token salvo!");
+
+        } catch (error: any) {
+            if ( error.response?.status === 403) {
+
+                setLoginError(
+                    "Usuário desativado."
+                );
+
+            } else {
+
+                setLoginError(
+                    "Usuário ou senha inválidos."
+                );
+
+            }
+
+    } finally {
+
+            setLoading(false);
+
+        }
     };
 
     return (

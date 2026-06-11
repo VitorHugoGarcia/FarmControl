@@ -110,6 +110,13 @@ export const login = async (
             });
         }
 
+        // VERIFICA SE USUÁRIO ESTÁ ATIVO
+        if (!usuario.ativo) {
+            return res.status(403).json({
+                erro: "Usuário desativado"
+            });
+        }
+
         // COMPARA SENHA
         const senhaCorreta = await bcrypt.compare(
             senha,
