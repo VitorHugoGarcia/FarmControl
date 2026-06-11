@@ -1,0 +1,18 @@
+enum Cargo {
+  BALCONISTA
+  FARMACEUTICO
+  ADMINISTRADOR
+}
+
+model Usuario {
+  CPF        String   @id
+  nome       String
+  email      String   @unique
+  senha      String
+  cargo      Cargo
+
+  ativo      Boolean  @default(true)
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+}
