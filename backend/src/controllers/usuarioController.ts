@@ -151,6 +151,9 @@ export const listarUsuarios = async(
 ) => {
     try {
         const usuario = await prisma.usuario.findMany({
+            where: {
+                ativo: true
+            },
             select: {
                 CPF: true,
                 nome: true,
@@ -169,3 +172,246 @@ export const listarUsuarios = async(
         });
     }
 };
+
+export const usuariosInativos = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+       const usuario = await prisma.usuario.findMany({
+        where: {
+            ativo: false
+        },
+        select: {
+            CPF: true,
+            nome: true,
+            email: true,
+            cargo: true,
+            createdAt: true,
+            updatedAt: true
+        }
+       })
+
+       return res.status(200).json(usuario);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            erro: "Erro ao listar usuários"
+        });
+    }
+}
+
+export const buscarUsuarioPorCPF = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        console.log("Entrou no controller");
+        const CPF  = req.params.CPF as string;
+
+        const usuario = await prisma.usuario.findUnique({
+            where: { CPF },
+            select: {
+                CPF: true,
+                nome: true,
+                email: true,
+                cargo: true,
+                createdAt: true,
+                updatedAt: true
+            }
+        });
+
+        if (!usuario) {
+            return res.status(404).json({
+                erro: "Usuario não encontrado"
+            });
+        }
+
+        return res.status(200).json(usuario);
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            erro: "Erro ao buscar usuário"
+        });
+    }
+};
+
+export const atualizarUsuario = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        const CPF = req.params.CPF as string;
+        const {nome, email, cargo} = req.body;
+
+        const usuarioExiste = await prisma.usuario.findUnique({
+            where: { CPF }
+        });
+
+        if(!usuarioExiste){
+            return res.status(404).json({
+                erro: "Usuário não encontrado"
+            });
+        }
+
+        const usuarioAtualizido = await prisma.usuario.update({
+            where: { CPF },
+            data: {
+                nome,
+                email,
+                cargo
+            }
+        });
+
+        return res.status(200).json({
+            mensagem: "Usuário atualizado com sucesso",
+            usuario: usuarioAtualizido
+        });
+    } catch (error){
+        console.error(error);
+
+        return res.status(500).json({
+            erro: "Erro ao atualizar usuário"
+        });
+    }
+};
+
+export const atualizarSenha = async (
+    req: Request,
+    res: Response
+) => {
+    try{
+        const CPF = req.params.CPF as string;
+        const { senhaAtual, novaSenha} = req.body;
+
+        if(!senhaAtual  || !novaSenha){
+            return res.status(400).json({
+                erro: "Senha atual e nova senha são iguais"
+            });
+        }
+
+        const usuario = await prisma.usuario.findUnique({
+            where: { CPF }
+        });
+
+        if(!usuario){
+            return res.status(404).json({
+                erro: "Usuário não encontrado!!"
+            });
+        }
+
+        const senhaCorreta = await bcrypt.compare(
+            senhaAtual,
+            usuario.senha
+        );
+        if(!senhaCorreta) {
+            return res.status(401).json({
+                erro: "Senha atual incorreta"
+            });
+        }
+
+        const novaSenhaHash = await bcrypt.hash(novaSenha, 10);
+        await prisma.usuario.update({
+            where: { CPF },
+            data: {
+                senha: novaSenhaHash
+            }
+        });
+
+        return res.status(200).json({
+            mensagem: "Senha alterada com sucesso!!"
+        });
+    } catch(error){
+        console.error(error);
+
+        return res.status(500).json({
+            erro: "Erro ao alterar senha"
+        });
+    }
+};
+
+export const desativarUsuario = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        const CPF = req.params.CPF as string;
+
+        const usuario = await prisma.usuario.findUnique({
+            where: { CPF }
+        });
+
+        if(!usuario){
+            return res.status(404).json({
+                erro: "Usuario não encontrado"
+            });
+        }
+
+        const usuarioDesativado = await prisma.usuario.update({
+            where: { CPF },
+            data: {
+                ativo: false
+            }
+        });
+
+        return res.status(200).json({
+            mensagem: "Ususário destivado com sucesso!!!",
+            usuario: usuarioDesativado
+        });
+
+
+    } catch (error) {
+       console.error(error);
+
+       return res.status(500).json({
+            erro: "Erro ao desativar usuário"
+       });
+    }
+}
+
+export const reativarUsuario = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        const CPF = req.params.CPF as string;
+
+        const usuario = await prisma.usuario.findUnique({
+            where: { CPF }
+        });
+
+        if(!usuario){
+            return res.status(404).json({
+                erro: "Usuario não encontrado"
+            });
+        }
+
+        if(usuario.ativo){
+            return res.status(200).json({
+                mensagem: "Usuário já estava ativo"
+            })
+        }
+
+        const usuarioAtivado = await prisma.usuario.update({
+            where: { CPF },
+            data: {
+                ativo: true
+            }
+        });
+
+        return res.status(200).json({
+            mensagem: "Ususário ativado com sucesso!!!",
+            usuario: usuarioAtivado
+        });
+
+
+    } catch (error) {
+       console.error(error);
+
+       return res.status(500).json({
+            erro: "Erro ao ativar usuário"
+       });
+    }
+}

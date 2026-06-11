@@ -2,7 +2,16 @@
 // (que gerencia as comunicações de internet do projeto).
 import { Router } from 'express';
 // Importa a função de cadastro que você acabou de escrever
-import { cadastrarUsuario, login, listarUsuarios } from '../controllers/usuarioController';
+import { atualizarUsuario,
+    cadastrarUsuario,
+    login,
+    listarUsuarios,
+    buscarUsuarioPorCPF,
+    desativarUsuario,
+    reativarUsuario,
+    usuariosInativos,
+    atualizarSenha
+    } from '../controllers/usuarioController';
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { cargoMiddleware } from "../middlewares/cargoMiddleware.js";
 
@@ -24,5 +33,45 @@ router.get(
     cargoMiddleware("ADMINISTRADOR"),
     listarUsuarios
 );
+router.get(
+    "/inativos",
+    authMiddleware,
+    cargoMiddleware("ADMINISTRADOR"),
+    usuariosInativos
+)
+
+router.get(
+    "/usuario/:CPF",
+    authMiddleware,
+    cargoMiddleware("ADMINISTRADOR"),
+    buscarUsuarioPorCPF
+);
+
+router.put(
+    "/usuario/:CPF",
+    authMiddleware,
+    cargoMiddleware("ADMINISTRADOR"),
+    atualizarUsuario
+);
+
+router.patch(
+    "/usuario/:CPF/desativar",
+    authMiddleware,
+    cargoMiddleware("ADMINISTRADOR"),
+    desativarUsuario
+)
+router.patch(
+    "/usuario/:CPF/ativar",
+    authMiddleware,
+    cargoMiddleware("ADMINISTRADOR"),
+    reativarUsuario
+)
+
+router.patch(
+    "/usuario/:CPF/senha",
+    authMiddleware,
+    atualizarSenha
+);
+
 
 export default router;

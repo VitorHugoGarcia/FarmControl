@@ -22,7 +22,7 @@ export function cargoMiddleware(...cargosPermitidos: string[]) {
                 erro: "Acesso negado!"
             });
         }
-
+        console.log("Passou no cargo");
         next();
 
     };

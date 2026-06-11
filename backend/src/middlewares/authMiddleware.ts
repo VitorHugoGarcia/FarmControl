@@ -16,6 +16,8 @@ export const authMiddleware = (
     res: Response,
     next: NextFunction
 ) => {
+
+    
     try{
         const authHeader = req.headers.authorization;
 
@@ -37,6 +39,7 @@ export const authMiddleware = (
 
         const decoded = verificarToken(token) as TokenPayload;
         req.usuario = decoded;
+        console.log("Passou no auth");
         next();
 
     } catch (error){
