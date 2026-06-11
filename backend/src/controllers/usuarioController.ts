@@ -286,7 +286,7 @@ export const atualizarSenha = async (
         const CPF = req.params.CPF as string;
         const { senhaAtual, novaSenha} = req.body;
 
-        if(!senhaAtual  || !novaSenha){
+        if(senhaAtual  == novaSenha){
             return res.status(400).json({
                 erro: "Senha atual e nova senha são iguais"
             });
