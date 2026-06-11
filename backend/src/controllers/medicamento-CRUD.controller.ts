@@ -43,6 +43,14 @@ export const processarNotaFiscal = async (req: Request, res: Response) => {
   res.status(201).json(medicamentos);
 };
 
+export const criarMedicamento = async (req: Request, res: Response) => {
+  const { nome, categoria, fabricante, lote, quantidade, quantidadeMinima, preco, dataValidade } = req.body;
+  const medicamento = await prisma.medicamento.create({
+    data: { nome, categoria, fabricante, lote, quantidade, quantidadeMinima, preco, dataValidade: new Date(dataValidade) },
+  });
+  res.status(201).json(medicamento);
+};
+
 export const listarMedicamentos = async (req: Request, res: Response) => {
   const medicamentos = await prisma.medicamento.findMany();
   res.json(medicamentos);
