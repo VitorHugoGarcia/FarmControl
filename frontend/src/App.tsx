@@ -1,9 +1,9 @@
 import LoginPage from "./pages/loginPages";
 
-export default function App(){
+export default function App() {
   return (
     <div>
-      <LoginPage/>
+      <LoginPage />
     </div>
   );
 }
