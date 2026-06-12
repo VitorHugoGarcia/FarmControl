@@ -53,8 +53,8 @@ export const criarMedicamento = async (req: Request, res: Response) => {
 };
 
 export const listarMedicamentos = async (req: Request, res: Response) => {
-  const medicamentos = await prisma.medicamento.findMany();
-  res.json(medicamentos);
+  const medicamento = await prisma.medicamento.findMany();
+  res.json(medicamento);
 };
 
 export const buscarMedicamento = async (req: Request, res: Response) => {
