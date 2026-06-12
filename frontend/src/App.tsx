@@ -9,10 +9,10 @@ function App() {
   return (
     <HashRouter>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
+        {/* <Route path="/" element={<LoginPage />} /> */}
 
         <Route element={<Layout />}>
-          <Route path="/home" element={<HomePage />}/>
+          <Route path="/" element={<HomePage />}/>
           <Route path="/cadastro-manual" element={<CadastroManualPage />}/>
         </Route> 
       </Routes>
