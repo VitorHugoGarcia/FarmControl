@@ -6,6 +6,7 @@ model Medicamento {
   lote             String
   quantidade       Int
   quantidadeMinima Int      @default(10)
-  preco            Float
+  precoCompra      Float
+  precoVenda       Float
   dataValidade     DateTime
 }

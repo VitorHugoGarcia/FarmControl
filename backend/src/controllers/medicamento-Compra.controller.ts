@@ -63,7 +63,7 @@ export const realizarCompra = async (req: Request, res: Response) => {
     nome: med.nome,
     fabricante: med.fabricante,
     quantidade: item.quantidade,
-    preco: med.preco,
+    preco: med.precoVenda,
   };
 });
 
