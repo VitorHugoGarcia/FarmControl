@@ -1,14 +1,14 @@
-const { app, BrowserWindow } = require('electron')
+import { app, BrowserWindow } from "electron";
 
 const createWindow = () => {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600
-  })
+    width: 1000,
+    height: 700,
+  });
 
-  win.loadFile('index.html')
-}
+  win.loadURL("http://localhost:5173");
+};
 
 app.whenReady().then(() => {
-  createWindow()
-})
+  createWindow();
+});
