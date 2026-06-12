@@ -1,4 +1,6 @@
-import type { Medicamento } from "../types/Medicamento";
+import type { ItemVenda } from "../types/ItemVenda";
+import type { Medicamento,  } from "../types/Medicamento";
+import type { ResultadoVenda } from "../types/ResultadoVenda";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -23,4 +25,25 @@ export const criarMedicamento = async (medicamento: Omit<Medicamento, "id">): Pr
   }
 
     return response.json();
+};
+
+export const realizarVenda = async (itens: ItemVenda[]): Promise<ResultadoVenda> => {
+    const payload = { itens }; 
+
+    const response = await fetch(`${API_URL}/medicamentos/compra`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.error || "Erro ao processar a venda!");
+    }
+
+    return response.json();
+};
+
+export const obterLinkDownload = (nomeArquivo: string): string => {
+    return `${API_URL}/medicamentos/compra/download/${nomeArquivo}`;
 };
