@@ -18,6 +18,7 @@ const router = Router();
 router.get("/", listarMedicamentos);
 router.post("/", criarMedicamento);
 router.get("/:id", buscarMedicamento);
+router.post("/", criarMedicamento);
 router.post("/nota-fiscal", upload.single("xml"), processarNotaFiscal);
 router.put("/:id", atualizarMedicamento);
 router.delete("/:id", deletarMedicamento);

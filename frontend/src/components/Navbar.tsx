@@ -13,7 +13,7 @@ export default function Navbar() {
         <NavLink to="/" className={linkClasses} end>
           Estoque
         </NavLink>
-        <NavLink to="/cadastro" className={linkClasses}>
+        <NavLink to="/cadastro-manual" className={linkClasses}>
           Cadastrar Medicamento
         </NavLink>
         <NavLink to="/compra" className={linkClasses}>
