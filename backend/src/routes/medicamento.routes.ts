@@ -5,6 +5,7 @@ import {
   processarNotaFiscal,
   atualizarMedicamento,
   deletarMedicamento,
+  criarMedicamento,
 } from "../controllers/medicamento-CRUD.controller";
 import { upload } from "../config/multer";
 import { 
@@ -16,6 +17,7 @@ const router = Router();
 
 router.get("/", listarMedicamentos);
 router.get("/:id", buscarMedicamento);
+router.post("/", criarMedicamento);
 router.post("/nota-fiscal", upload.single("xml"), processarNotaFiscal);
 router.put("/:id", atualizarMedicamento);
 router.delete("/:id", deletarMedicamento);

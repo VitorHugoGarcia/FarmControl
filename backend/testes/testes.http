@@ -35,6 +35,22 @@ Content-Disposition: form-data; name="quantidadeMinima"
 5
 ------Boundary--
 
+### Cadastrar medicamento manualmente
+POST http://localhost:3333/medicamentos
+Content-Type: application/json
+
+{
+  "nome": "PARACETAMOL 750MG",
+  "categoria": "Analgésico",
+  "fabricante": "EMS",
+  "lote": "LOT003",
+  "quantidade": 20,
+  "quantidadeMinima": 5,
+  "precoCompra": 1.50,
+  "precoVenda": 3.00,
+  "dataValidade": "2027-12-31"
+}
+
 ### Listar todos os medicamentos
 GET http://localhost:3333/medicamentos
 
