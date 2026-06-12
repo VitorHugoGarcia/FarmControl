@@ -77,9 +77,9 @@ export default function HomePage() {
                     </thead>
                     <tbody>
                         {medicamentos.map((med) => {
-                            const estoqueBaixo = med.quantidade <= med.quantidadeMinima;
                             return (
-                                <tr key={med.id} className={estoqueBaixo ? "bg-red-100" : ""}>
+                                <tr className={medicamentosCriticos.includes(med) ? "bg-red-100" : 
+                                medicamentosValidadeCritica.includes(med) ? "bg-violet-200" : ""} >
                                     <td className="border-t border-gray-300 p-2 text-center">{med.nome}</td>
                                     <td className="border-t border-gray-300 p-2 text-center">{med.categoria}</td>
                                     <td className="border-t border-gray-300 p-2 text-center">{med.fabricante}</td>
