@@ -10,7 +10,6 @@
         <CNPJ>60643248000124</CNPJ>
         <xNome>FARMACIA INTEGRADA DO BRASIL LTDA</xNome>
       </emit>
-      
       <det nItem="1">
         <prod>
           <cEAN>7891011121314</cEAN>
@@ -19,13 +18,15 @@
           <qCom>2.0000</qCom>
           <vUnCom>22.4000</vUnCom>
           <vProd>44.80</vProd>
+          <lote>LOTE-001</lote>
+          <categoria>Antibiótico</categoria>
+          <dataValidade>2027-05-21</dataValidade>
           <med>
             <cProdANVISA>1018103310024</cProdANVISA>
             <vPMC>32.50</vPMC>
           </med>
         </prod>
       </det>
-
       <det nItem="2">
         <prod>
           <cEAN>7896004714646</cEAN>
@@ -34,13 +35,15 @@
           <qCom>5.0000</qCom>
           <vUnCom>4.5000</vUnCom>
           <vProd>22.50</vProd>
+          <lote>LOTE-002</lote>
+          <categoria>Analgésico</categoria>
+          <dataValidade>2027-05-21</dataValidade>
           <med>
             <cProdANVISA>1023505410019</cProdANVISA>
             <vPMC>6.20</vPMC>
           </med>
         </prod>
       </det>
-
       <total>
         <ICMSTot>
           <vNF>67.30</vNF>

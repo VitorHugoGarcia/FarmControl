@@ -8,23 +8,33 @@ export const processarNotaFiscal = async (req: Request, res: Response) => {
     return;
   }
 
-  const { lote, categoria, dataValidade, quantidadeMinima, precoVenda } = req.body;
+  const { precoVenda } = req.body;
 
-  if (!lote || !categoria || !dataValidade || !quantidadeMinima || !precoVenda) {
-    res.status(400).json({ error: "Campos obrigatórios: lote, categoria, dataValidade, quantidadeMinima, precoVenda" });
+  if (!precoVenda) {
+    res.status(400).json({ error: "Campo obrigatório: precoVenda" });
     return;
   }
 
   const xmlString = req.file.buffer.toString("utf-8");
   const parsed = await xml2js.parseStringPromise(xmlString, { explicitArray: false });
-
   const nfe = parsed.nfeProc.NFe.infNFe;
   const fabricante = nfe.emit.xNome;
   const itens = Array.isArray(nfe.det) ? nfe.det : [nfe.det];
 
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+
   const medicamentos = await Promise.all(
     itens.map((item: any) => {
       const prod = item.prod;
+
+      const dataValidade = new Date(prod.dataValidade);
+      dataValidade.setHours(0, 0, 0, 0);
+
+      if (dataValidade <= hoje) {
+        throw new Error(`Medicamento "${prod.xProd}" está vencido ou vence hoje e não pode ser cadastrado.`);
+      }
+
       return prisma.medicamento.create({
         data: {
           nome: prod.xProd,
@@ -32,10 +42,10 @@ export const processarNotaFiscal = async (req: Request, res: Response) => {
           quantidade: Math.floor(Number(prod.qCom)),
           precoCompra: Number(prod.vUnCom),
           precoVenda: Number(precoVenda),
-          lote,
-          categoria,
-          dataValidade: new Date(dataValidade),
-          quantidadeMinima: Number(quantidadeMinima),
+          lote: prod.lote,
+          categoria: prod.categoria,
+          dataValidade,
+          quantidadeMinima: 10,
         },
       });
     })
@@ -46,9 +56,21 @@ export const processarNotaFiscal = async (req: Request, res: Response) => {
 
 export const criarMedicamento = async (req: Request, res: Response) => {
   const { nome, categoria, fabricante, lote, quantidade, quantidadeMinima, precoCompra, precoVenda, dataValidade } = req.body;
+
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  const dataVal = new Date(dataValidade);
+  dataVal.setHours(0, 0, 0, 0);
+
+  if (dataVal <= hoje) {
+    res.status(400).json({ error: "Medicamento vencido ou que vence hoje não pode ser cadastrado." });
+    return;
+  }
+
   const medicamento = await prisma.medicamento.create({
-    data: { nome, categoria, fabricante, lote, quantidade, quantidadeMinima, precoCompra, precoVenda, dataValidade: new Date(dataValidade) },
+    data: { nome, categoria, fabricante, lote, quantidade, quantidadeMinima, precoCompra, precoVenda, dataValidade: dataVal },
   });
+
   res.status(201).json(medicamento);
 };
 
@@ -74,10 +96,12 @@ export const buscarMedicamento = async (req: Request, res: Response) => {
 export const atualizarMedicamento = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { nome, categoria, fabricante, lote, quantidade, quantidadeMinima, precoCompra, precoVenda, dataValidade } = req.body;
+
   const medicamento = await prisma.medicamento.update({
     where: { id: Number(id) },
     data: { nome, categoria, fabricante, lote, quantidade, quantidadeMinima, precoCompra, precoVenda, dataValidade: new Date(dataValidade) },
   });
+
   res.json(medicamento);
 };
 

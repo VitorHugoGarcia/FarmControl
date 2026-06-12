@@ -12,6 +12,24 @@ export const listarMedicamentos = async (): Promise<Medicamento[]> => {
     return response.json();
 };
 
+export const importarNotaFiscal = async (arquivo: File, precoVenda: number): Promise<any> => {
+  const formData = new FormData();
+  formData.append("xml", arquivo);
+  formData.append("precoVenda", String(precoVenda));
+
+  const response = await fetch(`${API_URL}/medicamentos/nota-fiscal`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => null);
+    throw new Error(data?.error || "Erro ao importar nota fiscal");
+  }
+
+  return response.json();
+};
+
 export const criarMedicamento = async (medicamento: Omit<Medicamento, "id">): Promise<Medicamento> => {
     const response = await fetch(`${API_URL}/medicamentos`, {
         method: "POST",
