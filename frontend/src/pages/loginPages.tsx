@@ -32,7 +32,7 @@ export default function LoginPage(){
                 resposta.token
             );
 
-            navigate("/home");
+            navigate("/homePage");
 
         } catch (error: any) {
 

@@ -95,3 +95,28 @@ GET http://localhost:3333/medicamentos/compra/download/compra_TIMESTAMP.xml
 
 ### Deletar medicamento
 DELETE http://localhost:3333/medicamentos/2
+
+### Login
+POST http://localhost:3333/login
+Content-Type: application/json
+
+{
+  "email": "adminnovo@farmcontrol.com",
+  "senha": "123456"
+}
+
+###
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJDUEYiOiIxMTEuMTExLjExMS0xMSIsImNhcmdvIjoiQURNSU5JU1RSQURPUiIsImlhdCI6MTc4MTI5MTE2NCwiZXhwIjoxNzgxMzc3NTY0fQ.2LgPtEYG_Ww5NG8scn2w2ten9TqROzsnhX6OaM5OxWY
+
+### Criar usuários
+POST http://localhost:3333/usuario
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "CPF": "333.333.333-11",
+  "nome": "Balconista",
+  "email": "balconista@farmcontrol.com",
+  "senha": "123456",
+  "cargo": "BALCONISTA"
+}

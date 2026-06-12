@@ -8,4 +8,19 @@ export const listarMedicamentos = async (): Promise<Medicamento[]> => {
         throw new Error("Erro ao buscar medicamentos!");
     }
     return response.json();
-}
+};
+
+export const criarMedicamento = async (medicamento: Omit<Medicamento, "id">): Promise<Medicamento> => {
+    const response = await fetch(`${API_URL}/medicamentos`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(medicamento),
+    });
+
+    if (!response.ok) {
+    const data = await response.json().catch(() => null);
+    throw new Error(data?.error || "Erro ao cadastrar medicamento");
+  }
+
+    return response.json();
+};

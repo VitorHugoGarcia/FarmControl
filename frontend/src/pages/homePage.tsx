@@ -53,7 +53,7 @@ export default function HomePage() {
                             </h1>
                         </div>
                         <div className="text-3xl text-violet-600 mb-3">
-                            {medicamentosCriticos.length}
+                            {medicamentosValidadeCritica.length}
                         </div>
                         <div className="text-violet-600">
                             Atenção!
