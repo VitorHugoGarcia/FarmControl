@@ -86,11 +86,11 @@ export default function HomePage() {
                                     <td className="border-t border-gray-300 p-2 text-center">{med.lote}</td>
                                     <td className="border-t border-gray-300 p-2 text-center">{med.quantidade}</td>
                                     <td className="border-t border-gray-300 p-2 text-center">
-                                    {new Date(med.dataValidade).toLocaleDateString("pt-BR")}
+                                        {new Date(med.dataValidade).toLocaleDateString("pt-BR")}
                                     </td>
-                                    <td className="border-t border-gray-300 p-2 text-center">
-                                    R$ {med.preco.toFixed(2)}
-                                    </td>
+                                    <td className="p-2">
+                                        R$ {med.precoVenda.toFixed(2)}
+                                        </td>
                                 </tr>
                             );
                     })}

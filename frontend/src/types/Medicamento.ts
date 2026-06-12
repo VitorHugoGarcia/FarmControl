@@ -6,6 +6,7 @@ export interface Medicamento {
   lote: string;
   quantidade: number;
   quantidadeMinima: number;
-  preco: number;
+  precoCompra: number;
+  precoVenda: number;
   dataValidade: string;
 }
