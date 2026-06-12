@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-import nfeRoutes from './routes/nfeRoutes.js';
 import medicamentoRoutes from './routes/medicamento.routes.js';
 import routerBalconista from './routes/usuarioRoutes.js';
 
@@ -15,7 +14,6 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/medicamentos', medicamentoRoutes);
-app.use('/api/nfe', nfeRoutes);
 app.use(routerBalconista);
 
 app.get('/', (req, res) => {
