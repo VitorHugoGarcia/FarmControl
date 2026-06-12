@@ -12,7 +12,7 @@ function App() {
         <Route path="/" element={<LoginPage />} />
 
         <Route element={<Layout />}>
-          <Route path="/" element={<HomePage />}/>
+          <Route path="/home" element={<HomePage />}/>
           <Route path="/cadastro-manual" element={<CadastroManualPage />}/>
         </Route> 
       </Routes>
