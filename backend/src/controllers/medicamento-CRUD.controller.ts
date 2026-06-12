@@ -8,10 +8,10 @@ export const processarNotaFiscal = async (req: Request, res: Response) => {
     return;
   }
 
-  const { lote, categoria, dataValidade, quantidadeMinima } = req.body;
+  const { lote, categoria, dataValidade, quantidadeMinima, precoVenda } = req.body;
 
-  if (!lote || !categoria || !dataValidade || !quantidadeMinima) {
-    res.status(400).json({ error: "Campos obrigatórios: lote, categoria, dataValidade, quantidadeMinima" });
+  if (!lote || !categoria || !dataValidade || !quantidadeMinima || !precoVenda) {
+    res.status(400).json({ error: "Campos obrigatórios: lote, categoria, dataValidade, quantidadeMinima, precoVenda" });
     return;
   }
 
@@ -30,7 +30,8 @@ export const processarNotaFiscal = async (req: Request, res: Response) => {
           nome: prod.xProd,
           fabricante,
           quantidade: Math.floor(Number(prod.qCom)),
-          preco: Number(prod.vUnCom),
+          precoCompra: Number(prod.vUnCom),
+          precoVenda: Number(precoVenda),
           lote,
           categoria,
           dataValidade: new Date(dataValidade),
@@ -44,9 +45,9 @@ export const processarNotaFiscal = async (req: Request, res: Response) => {
 };
 
 export const criarMedicamento = async (req: Request, res: Response) => {
-  const { nome, categoria, fabricante, lote, quantidade, quantidadeMinima, preco, dataValidade } = req.body;
+  const { nome, categoria, fabricante, lote, quantidade, quantidadeMinima, precoCompra, precoVenda, dataValidade } = req.body;
   const medicamento = await prisma.medicamento.create({
-    data: { nome, categoria, fabricante, lote, quantidade, quantidadeMinima, preco, dataValidade: new Date(dataValidade) },
+    data: { nome, categoria, fabricante, lote, quantidade, quantidadeMinima, precoCompra, precoVenda, dataValidade: new Date(dataValidade) },
   });
   res.status(201).json(medicamento);
 };
@@ -72,10 +73,10 @@ export const buscarMedicamento = async (req: Request, res: Response) => {
 
 export const atualizarMedicamento = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { nome, categoria, fabricante, lote, quantidade, quantidadeMinima, preco, dataValidade } = req.body;
+  const { nome, categoria, fabricante, lote, quantidade, quantidadeMinima, precoCompra, precoVenda, dataValidade } = req.body;
   const medicamento = await prisma.medicamento.update({
     where: { id: Number(id) },
-    data: { nome, categoria, fabricante, lote, quantidade, quantidadeMinima, preco, dataValidade: new Date(dataValidade) },
+    data: { nome, categoria, fabricante, lote, quantidade, quantidadeMinima, precoCompra, precoVenda, dataValidade: new Date(dataValidade) },
   });
   res.json(medicamento);
 };
