@@ -9,4 +9,5 @@ export interface Medicamento {
   precoCompra: number;
   precoVenda: number;
   dataValidade: string;
+  codigoBarras: string;
 }

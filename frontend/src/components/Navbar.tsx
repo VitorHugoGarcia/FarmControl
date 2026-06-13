@@ -19,6 +19,9 @@ export default function Navbar() {
         <NavLink to="/compra" className={linkClasses}>
           Realizar Venda
         </NavLink>
+        <NavLink to="/relatorios" className={linkClasses}>
+          Relatórios
+        </NavLink>
       </nav>
     </header>
   );

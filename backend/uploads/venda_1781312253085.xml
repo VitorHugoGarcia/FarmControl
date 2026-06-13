@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<venda>
+  <data>2026-06-13T00:57:33.086Z</data>
+  <itens>
+    <item>
+      <nome>Amoxicilina 500mg</nome>
+      <fabricante>Laboratório Teste LTDA</fabricante>
+      <quantidade>28</quantidade>
+      <precoUnitario>21.00</precoUnitario>
+      <subtotal>588.00</subtotal>
+    </item>
+  </itens>
+  <total>588.00</total>
+</venda>

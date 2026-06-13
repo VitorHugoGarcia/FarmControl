@@ -1,15 +1,18 @@
-import { useState, useEffect } from "react";
-import { listarMedicamentos, realizarVenda, obterLinkDownload } from "../services/medicamento.service";
+import { useState, useEffect, useRef } from "react";
+import { listarMedicamentos, realizarVenda, obterLinkDownload, buscarPorCodigoBarras } from "../services/medicamento.service";
 import type { Medicamento } from "../types/Medicamento";
 
 export default function VendaPage() {
     const [medicamentos, setMedicamentos] = useState<Medicamento[]>([]);
     const [selectedMedId, setSelectedMedId] = useState("");
     const [quantidade, setQuantidade] = useState("");
+    const [codigoBarras, setCodigoBarras] = useState("");
+    const [erroBarcode, setErroBarcode] = useState("");
     const [loading, setLoading] = useState(false);
     const [erro, setErro] = useState("");
     const [sucesso, setSucesso] = useState("");
-    const [arquivos, setArquivos] = useState<{ xml: string; pdf: string } | null>(null);
+    const [xmlFilename, setXmlFilename] = useState<string | null>(null);
+    const barcodeRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         listarMedicamentos()
@@ -17,11 +20,33 @@ export default function VendaPage() {
             .catch(() => setErro("Erro ao carregar a lista de medicamentos."));
     }, []);
 
+    const handleBarcodeSearch = async () => {
+        if (!codigoBarras.trim()) return;
+        setErroBarcode("");
+        try {
+            const med = await buscarPorCodigoBarras(codigoBarras.trim());
+            setSelectedMedId(String(med.id));
+            setCodigoBarras("");
+            // foca no campo de quantidade
+            document.getElementById("campo-quantidade")?.focus();
+        } catch (e) {
+            setErroBarcode(e instanceof Error ? e.message : "Não encontrado.");
+            setCodigoBarras("");
+        }
+    };
+
+    const handleBarcodeKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            handleBarcodeSearch();
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setErro("");
         setSucesso("");
-        setArquivos(null);
+        setXmlFilename(null);
         setLoading(true);
 
         if (!selectedMedId || Number(quantidade) <= 0) {
@@ -37,16 +62,18 @@ export default function VendaPage() {
             }]);
 
             setSucesso(response.message || "Venda realizada com sucesso!");
-            setArquivos(response.arquivos);
-            
+            setXmlFilename(response.arquivos.xml);
             setSelectedMedId("");
             setQuantidade("");
+            barcodeRef.current?.focus();
         } catch (error) {
             setErro(error instanceof Error ? error.message : "Erro ao realizar a venda.");
         } finally {
             setLoading(false);
         }
     };
+
+    const medSelecionado = medicamentos.find((m) => String(m.id) === selectedMedId);
 
     return (
         <div className="p-6 max-w-2xl">
@@ -56,8 +83,36 @@ export default function VendaPage() {
             {sucesso && <div className="p-3 mb-4 text-green-700 bg-green-100 rounded-md border border-green-300">{sucesso}</div>}
 
             <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg border border-gray-300 shadow-sm mb-6">
+
+                {/* Campo de código de barras */}
                 <div className="mb-4">
-                    <label className="block text-sm font-medium mb-1 text-gray-700">Selecione o Medicamento</label>
+                    <label className="block text-sm font-medium mb-1 text-gray-700">
+                        Código de Barras
+                    </label>
+                    <div className="flex gap-2">
+                        <input
+                            ref={barcodeRef}
+                            type="text"
+                            value={codigoBarras}
+                            onChange={(e) => { setCodigoBarras(e.target.value); setErroBarcode(""); }}
+                            onKeyDown={handleBarcodeKeyDown}
+                            className="flex-1 border border-gray-300 rounded-md p-2"
+                            placeholder="Escaneie ou digite o código e pressione Enter"
+                        />
+                        <button
+                            type="button"
+                            onClick={handleBarcodeSearch}
+                            className="px-3 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-800 text-sm"
+                        >
+                            Buscar
+                        </button>
+                    </div>
+                    {erroBarcode && <p className="text-red-500 text-xs mt-1">{erroBarcode}</p>}
+                </div>
+
+                {/* Seleção manual */}
+                <div className="mb-4">
+                    <label className="block text-sm font-medium mb-1 text-gray-700">Medicamento</label>
                     <select
                         value={selectedMedId}
                         onChange={(e) => setSelectedMedId(e.target.value)}
@@ -71,11 +126,17 @@ export default function VendaPage() {
                             </option>
                         ))}
                     </select>
+                    {medSelecionado && (
+                        <p className="text-xs text-gray-500 mt-1">
+                            Validade: {new Date(medSelecionado.dataValidade).toLocaleDateString("pt-BR")} · Lote: {medSelecionado.lote}
+                        </p>
+                    )}
                 </div>
 
                 <div className="mb-6">
                     <label className="block text-sm font-medium mb-1 text-gray-700">Quantidade</label>
                     <input
+                        id="campo-quantidade"
                         type="number"
                         value={quantidade}
                         onChange={(e) => setQuantidade(e.target.value)}
@@ -95,27 +156,15 @@ export default function VendaPage() {
                 </button>
             </form>
 
-            {arquivos && (
-                <div className="bg-gray-50 p-6 rounded-lg border border-gray-300 text-center">
-                    <h2 className="text-lg font-bold mb-4 text-gray-700">Fatura / Nota Fiscal Gerada</h2>
-                    <p className="text-sm text-gray-600 mb-4">Descarregue os documentos referentes a esta venda:</p>
-                    
-                    <div className="flex justify-center gap-4">
-                        <a 
-                            href={obterLinkDownload(arquivos.pdf)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors font-medium flex items-center gap-2">
-                            Descarregar PDF
-                        </a>
-                        <a 
-                            href={obterLinkDownload(arquivos.xml)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors font-medium flex items-center gap-2">
-                            Descarregar XML
-                        </a>
-                    </div>
+            {xmlFilename && (
+                <div className="flex justify-center">
+                    <a
+                        href={obterLinkDownload(xmlFilename)}
+                        download={xmlFilename}
+                        className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-colors font-medium"
+                    >
+                        Download XML
+                    </a>
                 </div>
             )}
         </div>

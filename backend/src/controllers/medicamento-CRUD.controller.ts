@@ -8,12 +8,14 @@ export const processarNotaFiscal = async (req: Request, res: Response) => {
     return;
   }
 
-  const { precoVenda } = req.body;
+  const { precos } = req.body;
 
-  if (!precoVenda) {
-    res.status(400).json({ error: "Campo obrigatório: precoVenda" });
+  if (!precos) {
+    res.status(400).json({ error: "Campo obrigatório: precos" });
     return;
   }
+
+  const precosArray: number[] = JSON.parse(precos);
 
   const xmlString = req.file.buffer.toString("utf-8");
   const parsed = await xml2js.parseStringPromise(xmlString, { explicitArray: false });
@@ -21,11 +23,16 @@ export const processarNotaFiscal = async (req: Request, res: Response) => {
   const fabricante = nfe.emit.xNome;
   const itens = Array.isArray(nfe.det) ? nfe.det : [nfe.det];
 
+  if (precosArray.length !== itens.length) {
+    res.status(400).json({ error: "Número de preços não corresponde ao número de itens." });
+    return;
+  }
+
   const hoje = new Date();
   hoje.setHours(0, 0, 0, 0);
 
   const medicamentos = await Promise.all(
-    itens.map((item: any) => {
+    itens.map((item: any, i: number) => {
       const prod = item.prod;
 
       const dataValidade = new Date(prod.dataValidade);
@@ -41,11 +48,12 @@ export const processarNotaFiscal = async (req: Request, res: Response) => {
           fabricante,
           quantidade: Math.floor(Number(prod.qCom)),
           precoCompra: Number(prod.vUnCom),
-          precoVenda: Number(precoVenda),
+          precoVenda: precosArray[i],
           lote: prod.lote,
           categoria: prod.categoria,
           dataValidade,
           quantidadeMinima: 10,
+          codigoBarras: prod.codigoBarras || "",
         },
       });
     })
@@ -55,7 +63,7 @@ export const processarNotaFiscal = async (req: Request, res: Response) => {
 };
 
 export const criarMedicamento = async (req: Request, res: Response) => {
-  const { nome, categoria, fabricante, lote, quantidade, quantidadeMinima, precoCompra, precoVenda, dataValidade } = req.body;
+  const { nome, categoria, fabricante, lote, quantidade, quantidadeMinima, precoCompra, precoVenda, dataValidade, codigoBarras } = req.body;
 
   const hoje = new Date();
   hoje.setHours(0, 0, 0, 0);
@@ -68,14 +76,17 @@ export const criarMedicamento = async (req: Request, res: Response) => {
   }
 
   const medicamento = await prisma.medicamento.create({
-    data: { nome, categoria, fabricante, lote, quantidade, quantidadeMinima, precoCompra, precoVenda, dataValidade: dataVal },
+    data: { nome, categoria, fabricante, lote, quantidade, quantidadeMinima, precoCompra, precoVenda, dataValidade: dataVal, codigoBarras },
   });
 
   res.status(201).json(medicamento);
 };
 
+// FEFO: ordenar pelo que vence primeiro
 export const listarMedicamentos = async (req: Request, res: Response) => {
-  const medicamentos = await prisma.medicamento.findMany();
+  const medicamentos = await prisma.medicamento.findMany({
+    orderBy: { dataValidade: "asc" },
+  });
   res.json(medicamentos);
 };
 
@@ -87,6 +98,21 @@ export const buscarMedicamento = async (req: Request, res: Response) => {
 
   if (!medicamento) {
     res.status(404).json({ error: "Medicamento não encontrado" });
+    return;
+  }
+
+  res.json(medicamento);
+};
+
+export const buscarPorCodigoBarras = async (req: Request, res: Response) => {
+  const { codigo } = req.params;
+  const medicamento = await prisma.medicamento.findFirst({
+    where: { codigoBarras: codigo },
+    orderBy: { dataValidade: "asc" }, // FEFO: retorna o lote que vence primeiro
+  });
+
+  if (!medicamento) {
+    res.status(404).json({ error: "Medicamento não encontrado para este código de barras." });
     return;
   }
 
@@ -107,8 +133,19 @@ export const atualizarMedicamento = async (req: Request, res: Response) => {
 
 export const deletarMedicamento = async (req: Request, res: Response) => {
   const { id } = req.params;
-  await prisma.medicamento.delete({
-    where: { id: Number(id) },
-  });
-  res.status(204).send();
+  try {
+    await prisma.medicamento.delete({
+      where: { id: Number(id) },
+    });
+    res.status(204).send();
+  } catch (error: any) {
+    // FK constraint: existem movimentações vinculadas
+    if (error?.code === "P2003" || error?.message?.includes("Foreign key")) {
+      res.status(409).json({
+        error: "Não é possível excluir: este medicamento possui movimentações registradas.",
+      });
+      return;
+    }
+    res.status(500).json({ error: "Erro ao excluir medicamento." });
+  }
 };

@@ -12,10 +12,10 @@ export const listarMedicamentos = async (): Promise<Medicamento[]> => {
     return response.json();
 };
 
-export const importarNotaFiscal = async (arquivo: File, precoVenda: number): Promise<any> => {
+export const importarNotaFiscal = async (arquivo: File, precos: number[]): Promise<any> => {
   const formData = new FormData();
   formData.append("xml", arquivo);
-  formData.append("precoVenda", String(precoVenda));
+  formData.append("precos", JSON.stringify(precos));
 
   const response = await fetch(`${API_URL}/medicamentos/nota-fiscal`, {
     method: "POST",
@@ -64,4 +64,26 @@ export const realizarVenda = async (itens: ItemVenda[]): Promise<ResultadoVenda>
 
 export const obterLinkDownload = (nomeArquivo: string): string => {
     return `${API_URL}/medicamentos/compra/download/${nomeArquivo}`;
+};
+
+export const buscarPorCodigoBarras = async (codigo: string): Promise<Medicamento> => {
+    const response = await fetch(`${API_URL}/medicamentos/barcode/${encodeURIComponent(codigo)}`);
+    if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.error || "Medicamento não encontrado.");
+    }
+    return response.json();
+};
+
+export const deletarMedicamento = async (id: number): Promise<void> => {
+    const response = await fetch(`${API_URL}/medicamentos/${id}`, {
+        method: "DELETE",
+    });
+    if (response.status === 409) {
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.error || "Não é possível excluir este medicamento.");
+    }
+    if (!response.ok && response.status !== 204) {
+        throw new Error("Erro ao excluir medicamento.");
+    }
 };

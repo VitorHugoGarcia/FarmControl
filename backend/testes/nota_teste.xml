@@ -1,54 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
+<nfeProc>
   <NFe>
-    <infNFe Id="NFe35260560643248000124550010008453211002345678" versao="4.00">
-      <ide>
-        <nNF>845321</nNF>
-        <dhEmi>2026-05-21T10:00:00-03:00</dhEmi>
-      </ide>
+    <infNFe>
       <emit>
-        <CNPJ>60643248000124</CNPJ>
-        <xNome>FARMACIA INTEGRADA DO BRASIL LTDA</xNome>
+        <xNome>Laboratório Teste LTDA</xNome>
       </emit>
       <det nItem="1">
         <prod>
-          <cEAN>7891011121314</cEAN>
-          <xProd>AMOXICILINA 500MG 21 CAPSULAS - MEDLEY</xProd>
-          <NCM>30041010</NCM>
-          <qCom>2.0000</qCom>
-          <vUnCom>22.4000</vUnCom>
-          <vProd>44.80</vProd>
-          <lote>LOTE-001</lote>
-          <categoria>Antibiótico</categoria>
-          <dataValidade>2027-05-21</dataValidade>
-          <med>
-            <cProdANVISA>1018103310024</cProdANVISA>
-            <vPMC>32.50</vPMC>
-          </med>
+          <xProd>Dipirona 500mg</xProd>
+          <lote>LOT-2024-001</lote>
+          <categoria>Analgésico</categoria>
+          <qCom>50</qCom>
+          <vUnCom>2.50</vUnCom>
+          <dataValidade>2027-12-31</dataValidade>
         </prod>
       </det>
       <det nItem="2">
         <prod>
-          <cEAN>7896004714646</cEAN>
-          <xProd>DIPIRONA MONOIDRATADA 500MG 10CP - EMS</xProd>
-          <NCM>30049025</NCM>
-          <qCom>5.0000</qCom>
-          <vUnCom>4.5000</vUnCom>
-          <vProd>22.50</vProd>
-          <lote>LOTE-002</lote>
-          <categoria>Analgésico</categoria>
-          <dataValidade>2027-05-21</dataValidade>
-          <med>
-            <cProdANVISA>1023505410019</cProdANVISA>
-            <vPMC>6.20</vPMC>
-          </med>
+          <xProd>Amoxicilina 500mg</xProd>
+          <lote>LOT-2024-002</lote>
+          <categoria>Antibiótico</categoria>
+          <qCom>30</qCom>
+          <vUnCom>8.90</vUnCom>
+          <dataValidade>2026-06-30</dataValidade>
         </prod>
       </det>
-      <total>
-        <ICMSTot>
-          <vNF>67.30</vNF>
-        </ICMSTot>
-      </total>
+      <det nItem="3">
+        <prod>
+          <xProd>Ibuprofeno 600mg</xProd>
+          <lote>LOT-2024-003</lote>
+          <categoria>Anti-inflamatório</categoria>
+          <qCom>100</qCom>
+          <vUnCom>1.80</vUnCom>
+          <dataValidade>2028-03-15</dataValidade>
+        </prod>
+      </det>
     </infNFe>
   </NFe>
 </nfeProc>

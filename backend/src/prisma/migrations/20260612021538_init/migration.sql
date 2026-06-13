@@ -13,6 +13,7 @@ CREATE TABLE "Medicamento" (
     "precoCompra" DOUBLE PRECISION NOT NULL,
     "precoVenda" DOUBLE PRECISION NOT NULL,
     "dataValidade" TIMESTAMP(3) NOT NULL,
+    "codigoBarras" TEXT NOT NULL,
 
     CONSTRAINT "Medicamento_pkey" PRIMARY KEY ("id")
 );
@@ -29,6 +30,18 @@ CREATE TABLE "Usuario" (
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Usuario_pkey" PRIMARY KEY ("CPF")
+);
+
+-- CreateTable
+CREATE TABLE "Venda" (
+    "id" SERIAL NOT NULL,
+    "nome" TEXT NOT NULL,
+    "quantidade" INTEGER NOT NULL,
+    "precoVenda" DOUBLE PRECISION NOT NULL,
+    "precoCompra" DOUBLE PRECISION NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Venda_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
