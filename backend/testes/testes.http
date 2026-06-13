@@ -106,8 +106,7 @@ Content-Type: application/json
 }
 
 ###
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJDUEYiOiIxMTEuMTExLjExMS0xMSIsImNhcmdvIjoiQURNSU5JU1RSQURPUiIsImlhdCI6MTc4MTI5MTE2NCwiZXhwIjoxNzgxMzc3NTY0fQ.2LgPtEYG_Ww5NG8scn2w2ten9TqROzsnhX6OaM5OxWY
-
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJDUEYiOiIxMTEuMTExLjExMS0xMSIsImNhcmdvIjoiQURNSU5JU1RSQURPUiIsImlhdCI6MTc4MTI5NTIxMywiZXhwIjoxNzgxMzgxNjEzfQ.qnXGEQZw1nXRdFdTdsbgQBQjkRcxacVyxI_NGMW2O-A
 ### Criar usuários
 POST http://localhost:3333/usuario
 Content-Type: application/json
@@ -120,3 +119,20 @@ Authorization: Bearer {{token}}
   "senha": "123456",
   "cargo": "BALCONISTA"
 }
+
+### Listar usuários
+GET http://localhost:3333/usuario
+Authorization: Bearer {{token}}
+
+### Atualizar
+PUT http://localhost:3333/usuario/111.111.111-11
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "CPF": "111.111.111-11",
+  "nome": "Adm",
+  "email": "adminnovo@farmcontrol.com",
+  "cargo": "ADMINISTRADOR"
+}
+

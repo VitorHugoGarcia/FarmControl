@@ -10,7 +10,7 @@ export default function Navbar() {
     <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center gap-4">
       <h2 className="text-xl font-bold mr-6">FarmControl</h2>
       <nav className="flex gap-2">
-        <NavLink to="/" className={linkClasses} end>
+        <NavLink to="/homePage" className={linkClasses} end>
           Estoque
         </NavLink>
         <NavLink to="/cadastro-manual" className={linkClasses}>
@@ -18,6 +18,12 @@ export default function Navbar() {
         </NavLink>
         <NavLink to="/compra" className={linkClasses}>
           Realizar Compra
+        </NavLink>
+        <NavLink to="/usuarios" className={linkClasses}>
+          Lista de usuários
+        </NavLink>
+        <NavLink to="/" className={linkClasses}>
+          SAIR
         </NavLink>
       </nav>
     </header>
