@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 
 import medicamentoRoutes from './routes/medicamento.routes.js';
 import routerBalconista from './routes/usuarioRoutes.js';
+import relatoriosRoutes from './routes/relatorios.routes.js';
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/medicamentos', medicamentoRoutes);
+app.use('/relatorios', relatoriosRoutes);
 app.use(routerBalconista);
 
 app.get('/', (req, res) => {

@@ -17,8 +17,7 @@ import { cargoMiddleware } from "../middlewares/cargoMiddleware.js";
 
 // Router organiza caminhos
 const router = Router();
-// Requisiçã ode tipo "POST". 
-// Usada quando o usuário que enviar/criar  um dado noco
+
 router.post('/usuario', 
     authMiddleware,
     cargoMiddleware("ADMINISTRADOR"),

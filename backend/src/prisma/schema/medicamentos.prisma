@@ -9,4 +9,5 @@ model Medicamento {
   precoCompra      Float
   precoVenda       Float
   dataValidade     DateTime
+  codigoBarras     String
 }

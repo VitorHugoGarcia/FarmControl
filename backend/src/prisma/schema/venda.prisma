@@ -1,0 +1,8 @@
+model Venda {
+  id           Int      @id @default(autoincrement())
+  nome         String
+  quantidade   Int
+  precoVenda   Float
+  precoCompra  Float
+  createdAt    DateTime @default(now())
+}

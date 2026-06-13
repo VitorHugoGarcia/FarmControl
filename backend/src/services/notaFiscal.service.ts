@@ -1,75 +1,47 @@
 import path from "path";
 import { create } from "xmlbuilder2";
 import fs from "fs";
-import PDFDocument from "pdfkit";
+import { fileURLToPath } from "url";
 
-interface itemCompra {
-    id: number;
-    nome: string;
-    fabricante: string;
-    quantidade: number;
-    preco: number;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const OUTPUT_DIR = path.join(__dirname, "../../uploads");
+
+if (!fs.existsSync(OUTPUT_DIR)) {
+  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 }
 
-export const gerarXMLCompra = (itens: itemCompra[], nomeArquivo: string): string => {
-  const total = itens.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
+export interface ItemVenda {
+  id: number;
+  nome: string;
+  fabricante: string;
+  quantidade: number;
+  preco: number;
+  total: number;
+}
 
-  const documento = create({ version: "1.0", encoding: "UTF-8" })
-    .ele("notaCompra")
-      .ele("dataEmissao").txt(new Date().toISOString()).up()
-      .ele("itens");
+export function gerarXML(itens: ItemVenda[], totalGeral: number, timestamp: number): string {
+  const filename = `venda_${timestamp}.xml`;
+  const filepath = path.join(OUTPUT_DIR, filename);
 
-  itens.forEach((item) => {
-    documento
+  const root = create({ version: "1.0", encoding: "UTF-8" }).ele("venda");
+  root.ele("data").txt(new Date().toISOString());
+  const itensEl = root.ele("itens");
+
+  for (const item of itens) {
+    itensEl
       .ele("item")
-        .ele("id").txt(String(item.id)).up()
-        .ele("nome").txt(item.nome).up()
-        .ele("fabricante").txt(item.fabricante).up()
-        .ele("quantidade").txt(String(item.quantidade)).up()
-        .ele("precoUnitario").txt(item.preco.toFixed(2)).up()
-        .ele("subtotal").txt((item.preco * item.quantidade).toFixed(2)).up()
-      .up();
-  });
+      .ele("nome").txt(item.nome).up()
+      .ele("fabricante").txt(item.fabricante).up()
+      .ele("quantidade").txt(String(item.quantidade)).up()
+      .ele("precoUnitario").txt(item.preco.toFixed(2)).up()
+      .ele("subtotal").txt(item.total.toFixed(2)).up();
+  }
 
-  const xml = documento.up()
-    .ele("total").txt(total.toFixed(2)).up()
-  .end({ prettyPrint: true });
+  root.ele("total").txt(totalGeral.toFixed(2));
 
-  const filePath = path.join(__dirname, "../notas", `${nomeArquivo}.xml`);
-  fs.writeFileSync(filePath, xml);
+  const xml = root.end({ prettyPrint: true });
+  fs.writeFileSync(filepath, xml, "utf-8");
+  return filename;
+}
 
-  return filePath;
-};
-
-export const gerarPDFCompra = (itens: itemCompra[], nomeArquivo: string): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const filePath = path.join(__dirname, "../notas", `${nomeArquivo}.pdf`);
-    const documento = new PDFDocument({ margin: 50 });
-    const stream = fs.createWriteStream(filePath);
-
-    documento.pipe(stream);
-
-    documento.fontSize(20).text("FarmControl", { align: "center" });
-    documento.fontSize(14).text("Nota de Compra", { align: "center" });
-    documento.moveDown();
-    documento.fontSize(10).text(`Data: ${new Date().toLocaleString("pt-BR")}`);
-    documento.moveDown();
-
-    documento.fontSize(12).text("Itens da compra:");
-    documento.moveDown(0.5);
-
-    itens.forEach((item, index) => {
-      documento.fontSize(10).text(
-        `${index + 1}. ${item.nome} | Qtd: ${item.quantidade} | Preço unit.: R$ ${item.preco.toFixed(2)} | Subtotal: R$ ${(item.preco * item.quantidade).toFixed(2)}`
-      );
-    });
-
-    const total = itens.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
-    documento.moveDown();
-    documento.fontSize(12).text(`Total: R$ ${total.toFixed(2)}`, { align: "right" });
-
-    documento.end();
-    stream.on("finish", () => resolve(filePath));
-    stream.on("error", reject);
-  });
-};

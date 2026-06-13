@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<venda>
+  <data>2026-06-13T00:09:36.691Z</data>
+  <itens>
+    <item>
+      <nome>PARACETAMOL 750MG</nome>
+      <fabricante>EMS</fabricante>
+      <quantidade>2</quantidade>
+      <precoUnitario>3.00</precoUnitario>
+      <subtotal>6.00</subtotal>
+    </item>
+  </itens>
+  <total>6.00</total>
+</venda>

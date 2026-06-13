@@ -17,7 +17,10 @@ export default function Navbar() {
           Cadastrar Medicamento
         </NavLink>
         <NavLink to="/compra" className={linkClasses}>
-          Realizar Compra
+          Realizar Venda
+        </NavLink>
+        <NavLink to="/relatorios" className={linkClasses}>
+          Relatórios
         </NavLink>
         <NavLink to="/usuarios" className={linkClasses}>
           Lista de usuários

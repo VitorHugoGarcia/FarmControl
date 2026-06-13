@@ -49,7 +49,6 @@ Content-Type: application/json
   "fabricante": "EMS",
   "lote": "LOT003",
   "quantidade": 20,
-  "quantidadeMinima": 5,
   "precoCompra": 1.50,
   "precoVenda": 3.00,
   "dataValidade": "2027-12-31"

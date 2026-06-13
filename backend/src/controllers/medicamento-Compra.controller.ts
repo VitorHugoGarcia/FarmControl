@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../prisma";
-import { gerarPDFCompra, gerarXMLCompra } from "../services/notaFiscal.service";
-import path from "path";
+import { gerarXML, type ItemVenda } from "../services/notaFiscal.service.js";
 
 interface ItemCompraRequest {
   id: number;
@@ -40,54 +39,52 @@ export const realizarCompra = async (req: Request, res: Response) => {
   }
 
   await Promise.all(
-  itens.map((item, i) => {
+    itens.map((item, i) => {
+      const med = medicamentos[i];
+      if (!med) throw new Error(`Medicamento com id ${item.id} não encontrado`);
+      const novaQuantidade = med.quantidade - item.quantidade;
 
-    const med = medicamentos[i];
+      return prisma.medicamento.update({
+        where: { id: item.id },
+        data: { quantidade: novaQuantidade },
+      });
+    })
+  );
 
-    if (!med) throw new Error(`Medicamento com id ${item.id} não encontrado`);
-    
-    return prisma.medicamento.update({
-      where: { id: item.id },
-      data: { quantidade: med.quantidade - item.quantidade },
-    });
-  })
-);
+  // Montar itens para nota fiscal
+  const itensVenda: ItemVenda[] = itens.map((item, i) => {
+    const med = medicamentos[i]!;
+    const preco = Number(med.precoVenda);
+    return {
+      id: med.id,
+      nome: med.nome,
+      fabricante: med.fabricante,
+      quantidade: item.quantidade,
+      preco,
+      total: preco * item.quantidade,
+    };
+  });
 
-  const itensNota = itens.map((item, i) => {
-  const med = medicamentos[i];
+  const totalGeral = itensVenda.reduce((sum, i) => sum + i.total, 0);
+  const timestamp = Date.now();
 
-  if (!med) throw new Error(`Medicamento com id ${item.id} não encontrado`);
-  
-  return {
-    id: med.id,
-    nome: med.nome,
-    fabricante: med.fabricante,
-    quantidade: item.quantidade,
-    preco: med.precoVenda,
-  };
-});
+  const xmlFilename = gerarXML(itensVenda, totalGeral, timestamp);
 
-  const nomeArquivo = `compra_${Date.now()}`;
-  const xmlPath = gerarXMLCompra(itensNota, nomeArquivo);
-  const pdfPath = await gerarPDFCompra(itensNota, nomeArquivo);
+  // Registrar vendas para relatório de lucros (não bloqueia a resposta em caso de falha)
+  prisma.venda.createMany({
+    data: itens.map((item, i) => {
+      const med = medicamentos[i]!;
+      return {
+        nome: med.nome,
+        quantidade: item.quantidade,
+        precoVenda: Number(med.precoVenda),
+        precoCompra: Number(med.precoCompra),
+      };
+    }),
+  }).catch(() => {});
 
   res.status(201).json({
-    message: "Compra realizada com sucesso",
-    arquivos: {
-      xml: path.basename(xmlPath),
-      pdf: path.basename(pdfPath),
-    },
+    message: "Venda realizada com sucesso!",
+    arquivos: { xml: xmlFilename },
   });
-};
-
-export const downloadArquivo = (req: Request<{ arquivo: string }>, res: Response) => {
-  const { arquivo } = req.params;
-
-  if (!arquivo) {
-    res.status(400).json({ error: "Nome do arquivo não informado" });
-    return;
-  }
-
-  const filePath = path.join(__dirname, "../notas", arquivo);
-  res.download(filePath);
 };
