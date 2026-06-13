@@ -9,12 +9,16 @@ export default function VendaPage() {
     const [loading, setLoading] = useState(false);
     const [erro, setErro] = useState("");
     const [sucesso, setSucesso] = useState("");
-    const [arquivos, setArquivos] = useState<{ xml: string; pdf: string } | null>(null);
+    const [arquivos, setArquivos] = useState<{ xml: string } | null>(null);
 
-    useEffect(() => {
+    const carregarLista = () => {
         listarMedicamentos()
             .then(setMedicamentos)
             .catch(() => setErro("Erro ao carregar a lista de medicamentos."));
+    };
+
+    useEffect(() => {
+        carregarLista();
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -38,9 +42,10 @@ export default function VendaPage() {
 
             setSucesso(response.message || "Venda realizada com sucesso!");
             setArquivos(response.arquivos);
-            
             setSelectedMedId("");
             setQuantidade("");
+            carregarLista();
+
         } catch (error) {
             setErro(error instanceof Error ? error.message : "Erro ao realizar a venda.");
         } finally {
@@ -97,25 +102,15 @@ export default function VendaPage() {
 
             {arquivos && (
                 <div className="bg-gray-50 p-6 rounded-lg border border-gray-300 text-center">
-                    <h2 className="text-lg font-bold mb-4 text-gray-700">Fatura / Nota Fiscal Gerada</h2>
-                    <p className="text-sm text-gray-600 mb-4">Descarregue os documentos referentes a esta venda:</p>
+                    <h2 className="text-lg font-bold mb-4 text-gray-700">Nota Fiscal Gerada</h2>
+                    <p className="text-sm text-gray-600 mb-4">Baixe o documento referente a esta venda:</p>
                     
-                    <div className="flex justify-center gap-4">
-                        <a 
-                            href={obterLinkDownload(arquivos.pdf)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors font-medium flex items-center gap-2">
-                            Descarregar PDF
-                        </a>
-                        <a 
-                            href={obterLinkDownload(arquivos.xml)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors font-medium flex items-center gap-2">
-                            Descarregar XML
-                        </a>
-                    </div>
+                    <a href={obterLinkDownload(arquivos.xml)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors font-medium">
+                        Baixar XML
+                    </a>
                 </div>
             )}
         </div>

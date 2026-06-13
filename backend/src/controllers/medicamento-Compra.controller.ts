@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { prisma } from "../prisma";
+import { gerarXMLVenda } from "../services/notaFiscal.service";
+import path from "path";
 
 interface ItemCompraRequest {
   id: number;
@@ -54,5 +56,36 @@ export const realizarCompra = async (req: Request, res: Response) => {
     })
   );
 
-  res.status(201).json({ message: "Venda realizada com sucesso" });
+  const itensNota = itens.map((item, i) => {
+    const med = medicamentos[i];
+    if (!med) throw new Error(`Medicamento com id ${item.id} não encontrado`);
+    return {
+      nome: med.nome,
+      fabricante: med.fabricante,
+      quantidade: item.quantidade,
+      precoVenda: med.precoVenda,
+    };
+  });
+
+  const nomeArquivo = `venda_${Date.now()}`;
+  const xmlPath = gerarXMLVenda(itensNota, nomeArquivo);
+
+  res.status(201).json({
+    message: "Venda realizada com sucesso",
+    arquivos: {
+      xml: path.basename(xmlPath),
+    },
+  });
+};
+
+export const downloadArquivo = (req: Request<{ arquivo: string }>, res: Response) => {
+  const { arquivo } = req.params;
+
+  if (!arquivo) {
+    res.status(400).json({ error: "Nome do arquivo não informado" });
+    return;
+  }
+
+  const filePath = path.join(process.cwd(), "src/notas", arquivo);
+  res.download(filePath);
 };

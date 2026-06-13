@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
+  <NFe>
+    <infNFe Id="NFe_saida_846951" versao="4.00">
+      <ide>
+        <nNF>846951</nNF>
+        <dhEmi>2026-06-13T00:34:06.951Z</dhEmi>
+        <tpNF>1</tpNF>
+      </ide>
+      <emit>
+        <CNPJ>00000000000000</CNPJ>
+        <xNome>FARMCONTROL FARMÁCIA LTDA</xNome>
+      </emit>
+      <det nItem="1">
+        <prod>
+          <xProd>DIPIRONA MONOIDRATADA 500MG 10CP - EMS</xProd>
+          <qCom>5.0000</qCom>
+          <vUnCom>35.0000</vUnCom>
+          <vProd>175.00</vProd>
+        </prod>
+      </det>
+      <total>
+        <ICMSTot>
+          <vNF>175.00</vNF>
+        </ICMSTot>
+      </total>
+    </infNFe>
+  </NFe>
+</nfeProc>
