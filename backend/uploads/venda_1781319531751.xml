@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<venda>
+  <data>2026-06-13T02:58:51.756Z</data>
+  <itens>
+    <item>
+      <nome>Dipirona 500mg</nome>
+      <fabricante>Laboratório Teste LTDA</fabricante>
+      <quantidade>20</quantidade>
+      <precoUnitario>11.00</precoUnitario>
+      <subtotal>220.00</subtotal>
+    </item>
+  </itens>
+  <total>220.00</total>
+</venda>

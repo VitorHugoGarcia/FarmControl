@@ -47,6 +47,22 @@ export async function atualizarUsuario(CPF: string, dados: {
     return resposta.data;
 }
 
+export async function desativarUsuario(CPF: string) {
+    const token = localStorage.getItem("token");
+
+    const resposta = await axios.patch(
+        `${API_URL}/usuario/${CPF}/desativar`,
+        {},
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    );
+
+    return resposta.data;
+}
+
 export async function listarUsuarios() {
     const token = localStorage.getItem("token");
 

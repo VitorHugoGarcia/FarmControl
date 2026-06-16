@@ -7,7 +7,16 @@ export default function CadastroUsuarioPage() {
     const [CPF, setCPF] = useState("");
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
+    const [confirmarSenha, setConfirmarSenha] = useState("");
     const [cargo, setCargo] = useState("");
+
+    const formatarCPF = (valor: string) => {
+        const nums = valor.replace(/\D/g, "").slice(0, 11);
+        return nums
+            .replace(/(\d{3})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+    };
 
     const [erro, setErro] = useState("");
     const [sucesso, setSucesso] = useState("");
@@ -22,16 +31,13 @@ export default function CadastroUsuarioPage() {
         setErro("");
         setSucesso("");
 
-        if (
-            !nome ||
-            !CPF ||
-            !email ||
-            !senha ||
-            !cargo
-        ) {
-            setErro(
-                "Preencha todos os campos obrigatórios."
-            );
+        if (!nome || !CPF || !email || !senha || !confirmarSenha || !cargo) {
+            setErro("Preencha todos os campos obrigatórios.");
+            return;
+        }
+
+        if (senha !== confirmarSenha) {
+            setErro("As senhas não coincidem.");
             return;
         }
 
@@ -40,13 +46,7 @@ export default function CadastroUsuarioPage() {
 
             await cadastrarUsuario({nome, CPF, email, senha, cargo});
 
-            setSucesso("Usuário cadastrado com sucesso!");
-
-            setNome("");
-            setCPF("");
-            setEmail("");
-            setSenha("");
-            setCargo("");
+            navigate("/usuarios");
 
         } catch (error: any) {
 
@@ -113,11 +113,10 @@ export default function CadastroUsuarioPage() {
                             <input
                                 type="text"
                                 value={CPF}
-                                onChange={(e) =>
-                                    setCPF(e.target.value)
-                                }
+                                onChange={(e) => setCPF(formatarCPF(e.target.value))}
                                 className="w-full border rounded-lg p-3"
                                 placeholder="000.000.000-00"
+                                maxLength={14}
                             />
                         </div>
 
@@ -177,12 +176,25 @@ export default function CadastroUsuarioPage() {
                             <input
                                 type="password"
                                 value={senha}
-                                onChange={(e) =>
-                                    setSenha(e.target.value)
-                                }
+                                onChange={(e) => setSenha(e.target.value)}
                                 className="w-full border rounded-lg p-3"
                             />
                         </div>
+                    </div>
+
+                    <div>
+                        <label className="block mb-2 font-medium">
+                            Confirmar Senha *
+                        </label>
+                        <input
+                            type="password"
+                            value={confirmarSenha}
+                            onChange={(e) => setConfirmarSenha(e.target.value)}
+                            className={`w-full border rounded-lg p-3 ${confirmarSenha && senha !== confirmarSenha ? "border-red-400" : ""}`}
+                        />
+                        {confirmarSenha && senha !== confirmarSenha && (
+                            <p className="text-red-500 text-sm mt-1">As senhas não coincidem.</p>
+                        )}
                     </div>
 
                     <div className="flex justify-end gap-4">

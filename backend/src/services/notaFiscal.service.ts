@@ -44,4 +44,3 @@ export function gerarXML(itens: ItemVenda[], totalGeral: number, timestamp: numb
   fs.writeFileSync(filepath, xml, "utf-8");
   return filename;
 }
-

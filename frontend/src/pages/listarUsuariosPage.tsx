@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { listarUsuarios } from "../services/usuarioService";
+import { listarUsuarios, desativarUsuario } from "../services/usuarioService";
 
 interface Usuario {
     CPF: string;
@@ -17,21 +17,31 @@ export default function ListarUsuariosPage() {
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        async function carregarUsuarios() {
-            try {
-                const resposta = await listarUsuarios();
-                setUsuarios(resposta);
-            } catch (error) {
-                console.error(error);
-                setErro("Erro ao carregar usuários.");
-            } finally {
-                setLoading(false);
-            }
+    async function carregarUsuarios() {
+        try {
+            setLoading(true);
+            const resposta = await listarUsuarios();
+            setUsuarios(resposta);
+        } catch (error) {
+            console.error(error);
+            setErro("Erro ao carregar usuários.");
+        } finally {
+            setLoading(false);
         }
+    }
 
-        carregarUsuarios();
-    }, []);
+    useEffect(() => { carregarUsuarios(); }, []);
+
+    async function handleDesativar(CPF: string, nome: string) {
+        if (!confirm(`Deseja excluir o usuário "${nome}"?`)) return;
+        try {
+            await desativarUsuario(CPF);
+            await carregarUsuarios();
+        } catch (error) {
+            console.error(error);
+            setErro("Erro ao excluir usuário.");
+        }
+    }
 
     if (loading) {
         return <p className="p-6">Carregando usuários...</p>;
@@ -39,9 +49,15 @@ export default function ListarUsuariosPage() {
 
     return (
         <div className="p-6 font-sans">
-            <h1 className="text-2xl font-bold mb-2">
-                Usuários
-            </h1>
+            <div className="flex items-center justify-between mb-2">
+                <h1 className="text-2xl font-bold">Usuários</h1>
+                <button
+                    onClick={() => navigate("/cadastro-usuario")}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                    + Adicionar Usuário
+                </button>
+            </div>
 
             <p className="text-gray-500 mb-6">
                 Gerencie os usuários cadastrados no sistema.
@@ -89,7 +105,7 @@ export default function ListarUsuariosPage() {
                                     </span>
                                 </td>
 
-                                <td className="p-3 text-right">
+                                <td className="p-3 text-right flex gap-2 justify-end">
                                     <button
                                         onClick={() =>
                                             navigate("/editar-usuario", {
@@ -99,6 +115,12 @@ export default function ListarUsuariosPage() {
                                         className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                                     >
                                         Editar
+                                    </button>
+                                    <button
+                                        onClick={() => handleDesativar(usuario.CPF, usuario.nome)}
+                                        className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                                    >
+                                        Excluir
                                     </button>
                                 </td>
                             </tr>

@@ -112,7 +112,7 @@ function CartaoLucro({ titulo, dados }: { titulo: string; dados: PeriodoLucro })
   );
 }
 
-// Tabela genérica de medicamentos
+// Tabela de medicamentos
 function TabelaMedicamentos({ medicamentos, badge, label }: { medicamentos: Medicamento[]; badge: string; label: string }) {
   if (medicamentos.length === 0)
     return <p className="text-sm text-gray-500">Nenhum medicamento nessa categoria.</p>;
